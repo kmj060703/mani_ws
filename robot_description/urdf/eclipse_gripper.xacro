@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="eclipse_gripper" params="prefix">
+    <xacro:property name="meshes_path" value="package://robot_description/meshes/eclipse_gripper"/>
+    <link name="${prefix}gripper_base_link">
+      <inertial>
+        <origin xyz="0.03472321325651381 9.460822286268101e-11 0.0003226506236917385" rpy="0 0 0"/>
+        <mass value="0.5114580658611895"/>
+        <inertia ixx="0.000405" iyy="0.000276" izz="0.000492" ixy="0.0" iyz="0.0" ixz="-5e-06"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.035 0.0 0.018" rpy="0.0 0.0 0.0"/>
+        <geometry>
+          <box size="0.07 0.1 0.11"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- Camera Mount Point & Tilt -->
+    <joint name="${prefix}camera_mount_joint" type="fixed">
+      <origin xyz="0.0325 0.0 0.0953" rpy="0 ${22.4996 * pi / 180.0} 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}camera_mount_link"/>
+    </joint>
+    <link name="${prefix}camera_mount_link"/>
+
+    <!-- Final Lens Position (camera_link) -->
+    <joint name="${prefix}camera_lens_joint" type="fixed">
+      <origin xyz="0.048966 0.0 -0.020282" rpy="0 0 0"/>
+      <parent link="${prefix}camera_mount_link"/>
+      <child link="${prefix}camera_link"/>
+    </joint>
+    <link name="${prefix}camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.01"/>
+        </geometry>
+        <material name="cyan">
+          <color rgba="0.0 1.0 1.0 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <!-- Camera Optical Frame (Standard for OpenCV/Vision) -->
+    <!-- ROS standard: Z-forward, X-right, Y-down -->
+    <joint name="${prefix}camera_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+      <parent link="${prefix}camera_link"/>
+      <child link="${prefix}camera_depth_optical_frame"/>
+    </joint>
+    <link name="${prefix}camera_depth_optical_frame"/>
+
+    <!-- Gripper TCP (Tool Center Point) -->
+    <!-- 80.799mm ahead of arm_joint6 (gripper_base_link) -->
+    <joint name="${prefix}tcp_joint" type="fixed">
+      <origin xyz="0.080799 0.0 0.0" rpy="-1.570796 0 -1.570796"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}tcp_link"/>
+    </joint>
+    <link name="${prefix}tcp_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.005"/>
+        </geometry>
+        <material name="red">
+          <color rgba="1.0 0.0 0.0 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <!-- gripper_motor_rjoint -->
+    <link name="${prefix}gripper_motor_rlink_1">
+      <inertial>
+        <origin xyz="0.0006562033861128511 -0.023049021487197105 -0.022764059438941418" rpy="0 0 0"/>
+        <mass value="0.021389887288841076"/>
+        <inertia ixx="2.6e-05" iyy="1.4e-05" izz="1.3e-05" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.0545 0.0201 -0.0235" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_motor_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.0545 0.0201 -0.0235" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_motor_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}gripper_motor_rjoint" type="revolute">
+      <origin xyz="0.0545 -0.0201 0.0235" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}gripper_motor_rlink_1"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit upper="1.570796" lower="0.0" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- gripper_motor_ljoint -->
+    <link name="${prefix}gripper_motor_llink_1">
+      <inertial>
+        <origin xyz="0.0002965530867078403 0.023056453557908578 -0.022764059438941664" rpy="0 0 0"/>
+        <mass value="0.021389887288841135"/>
+        <inertia ixx="2.6e-05" iyy="1.4e-05" izz="1.3e-05" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.0545 -0.0201 -0.0235" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_motor_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.0545 -0.0201 -0.0235" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_motor_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}gripper_motor_ljoint" type="revolute">
+      <origin xyz="0.0545 0.0201 0.0235" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}gripper_motor_llink_1"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit upper="0.0" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- gripper_para_rjoint -->
+    <link name="${prefix}gripper_parallel_rlink_1">
+      <inertial>
+        <origin xyz="0.0008528355306232568 -0.029955450983379248 -0.021830105261327407" rpy="0 0 0"/>
+        <mass value="0.017032342734706055"/>
+        <inertia ixx="1.8e-05" iyy="1e-05" izz="8e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.0395 0.046081 -0.022" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_parallel_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.0395 0.046081 -0.022" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_parallel_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}gripper_para_rjoint" type="continuous">
+      <origin xyz="0.0395 -0.046081 0.022" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}gripper_parallel_rlink_1"/>
+      <axis xyz="0.0 -0.0 -1.0"/>
+      <mimic joint="${prefix}gripper_motor_rjoint" multiplier="-1.0"/>
+    </joint>
+
+    <!-- gripper_para_ljoint -->
+    <link name="${prefix}gripper_parallel_llink_1">
+      <inertial>
+        <origin xyz="0.00038541558057235414 0.029965110083139262 -0.021830105261327504" rpy="0 0 0"/>
+        <mass value="0.017032342734706017"/>
+        <inertia ixx="1.8e-05" iyy="1e-05" izz="8e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.0395 -0.046081 -0.022" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_parallel_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.0395 -0.046081 -0.022" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_parallel_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}gripper_para_ljoint" type="continuous">
+      <origin xyz="0.0395 0.046081 0.022" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_base_link"/>
+      <child link="${prefix}gripper_parallel_llink_1"/>
+      <axis xyz="0.0 -0.0 -1.0"/>
+      <mimic joint="${prefix}gripper_motor_ljoint" multiplier="-1.0"/>
+    </joint>
+
+
+    <!-- hand_ljoint -->
+    <link name="${prefix}gripper_hand_llink_1">
+      <inertial>
+        <origin xyz="0.02957010084187421 -0.02479361287629442 -0.022500000626186036" rpy="0 0 0"/>
+        <mass value="0.07684150203836844"/>
+        <inertia ixx="2.3e-05" iyy="3.8e-05" izz="3e-05" ixy="8e-06" iyz="0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.040272 -0.106076 -0.0225" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_hand_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.040272 -0.106076 -0.0225" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_hand_llink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.04 -0.035 -0.02" rpy="0.0 0.0 0.0"/>
+        <geometry>
+          <box size="0.05 0.03 0.05"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}hand_motor_ljoint" type="continuous">
+      <origin xyz="-0.014228 0.085976 -0.001" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_motor_llink_1"/>
+      <child link="${prefix}gripper_hand_llink_1"/>
+      <axis xyz="-0.0 0.0 -1.0"/>
+      <mimic joint="${prefix}gripper_motor_ljoint" multiplier="-1.0"/>
+    </joint>
+
+    <joint name="${prefix}hand_para_ljoint" type="continuous">
+      <origin xyz="0.000772 0.059995 0.0005" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_parallel_llink_1"/>
+      <child link="${prefix}gripper_hand_llink_1"/>
+      <axis xyz="-0.0 0.0 1.0"/>
+      <mimic joint="${prefix}gripper_motor_ljoint" multiplier="-1.0"/>
+    </joint>
+
+
+    <!-- hand_rjoint -->
+    <link name="${prefix}gripper_hand_rlink_1">
+      <inertial>
+        <origin xyz="0.029569944388104653 0.024792951815875236 -0.022499999373813244" rpy="0 0 0"/>
+        <mass value="0.07684150203836844"/>
+        <inertia ixx="2.3e-05" iyy="3.8e-05" izz="3e-05" ixy="-8e-06" iyz="0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.041208 0.106056 -0.0225" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_hand_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.041208 0.106056 -0.0225" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/gripper_hand_rlink_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.04 0.035 -0.02" rpy="0.0 0.0 0.0"/>
+        <geometry>
+          <box size="0.05 0.03 0.05"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}hand_motor_rjoint" type="continuous">
+      <origin xyz="-0.013292 -0.085956 -0.001" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_motor_rlink_1"/>
+      <child link="${prefix}gripper_hand_rlink_1"/>
+      <axis xyz="-0.0 0.0 -1.0"/>
+      <mimic joint="${prefix}gripper_motor_rjoint" multiplier="-1.0"/>
+    </joint>
+
+    <joint name="${prefix}hand_para_rjoint" type="continuous">
+      <origin xyz="0.001708 -0.059975 0.0005" rpy="0 0 0"/>
+      <parent link="${prefix}gripper_parallel_rlink_1"/>
+      <child link="${prefix}gripper_hand_rlink_1"/>
+      <axis xyz="-0.0 0.0 1.0"/>
+      <mimic joint="${prefix}gripper_motor_rjoint" multiplier="-1.0"/>
+    </joint>
+  </xacro:macro>
+</robot>

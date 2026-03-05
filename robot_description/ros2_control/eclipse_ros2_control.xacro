@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="eclipse_ros2_control" params="prefix use_sim:= false can_port_name:=can0 u2d2_port_name:=/dev/ttyUSB0 use_mock_hardware:=false mock_sensor_commands:=false">
+        <ros2_control name="${prefix}eclipse_base" type="system">
+            <hardware>
+                <!-- <xacro:if value="${use_mock_hardware}"> -->
+                <plugin>mock_components/GenericSystem</plugin>
+                <param name="calculate_dynamics">true</param>
+                <param name="mock_sensor_commands">${mock_sensor_commands}</param>
+                <!-- </xacro:if> -->
+                <!-- <xacro:unless value="${use_mock_hardware}">
+                    <plugin>eclipse_ros2_control/EclipseSystemHardware</plugin>
+                    <param name="port_name">${can_port_name}</param>
+                    <param name="baud_rate">1000000</param>
+                </xacro:unless> -->
+            </hardware>
+
+            <joint name="${prefix}left_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/>
+                <state_interface name="position"/>
+            </joint>
+            <joint name="${prefix}right_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/>
+                <state_interface name="position"/>
+            </joint>
+            <joint name="${prefix}fl_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="${prefix}fr_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="${prefix}bl_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="${prefix}br_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <!-- <gpio name="base_left">
+                    <param name="type">rmd</param>
+                    <param name="id">1</param>
+                    <command_interface name="velocity"/>
+                    <state_interface name="velocity"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">0</param>
+                </gpio>
+                <gpio name="base_right">
+                    <param name="type">rmd</param>
+                    <param name="id">2</param>
+                    <command_interface name="velocity"/>
+                    <state_interface name="velocity"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">0</param>
+                </gpio>
+                <gpio name="flipper_left">
+                    <param name="type">rmd</param>
+                    <param name="id">3</param>
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">3</param>
+                </gpio>
+                <gpio name="flipper_right">
+                    <param name="type">rmd</param>
+                    <param name="id">4</param>
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">3</param>
+                </gpio>
+                <gpio name="flipper_back_left">
+                    <param name="type">rmd</param>
+                    <param name="id">5</param>
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">3</param>
+                </gpio>
+                <gpio name="flipper_back_right">
+                    <param name="type">rmd</param>
+                    <param name="id">6</param>
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                    <param name="Drive Mode">3</param>
+                </gpio> -->
+        </ros2_control>
+        <ros2_control name="${prefix}eclipse_arm" type="system">
+            <hardware>
+                <xacro:if value="${use_mock_hardware}">
+                    <plugin>mock_components/GenericSystem</plugin>
+                    <param name="mock_sensor_commands">${mock_sensor_commands}</param>
+                </xacro:if>
+                <xacro:unless value="${use_mock_hardware}">
+                    <plugin>dynamixel_hardware_interface/DynamixelHardware</plugin>
+                    <param name="port_name">${u2d2_port_name}</param>
+                    <param name="baud_rate">1000000</param>
+                    <param name="dynamixel_model_folder">/param/dxl_model/</param>
+                    <param name="number_of_joints">8</param>
+                    <param name="number_of_transmissions">8</param>
+                    <param name="loop_rate">100</param>
+                    <param name="use_fast_read">false</param>
+                    <param name="use_indirect_address">true</param>
+                    <param name="error_timeout_ms">4000</param>
+                    <param name="disable_torque_at_init">false</param>
+                    <param name="torque_enable">true</param>
+                </xacro:unless>
+            </hardware>
+            <joint name="${prefix}arm_joint1">
+                <param name="id">10</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}arm_joint2">
+                <param name="id">11</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}arm_joint3">
+                <param name="id">12</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}arm_joint4">
+                <param name="id">13</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}arm_joint5">
+                <param name="id">14</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}arm_joint6">
+                <param name="id">15</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}gripper_motor_rjoint">
+                <param name="id">16</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="${prefix}gripper_motor_ljoint">
+                <param name="id">17</param>
+                <param name="torque_enable">true</param>
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+            </joint>
+            <gpio name="dxl10">
+                <param name="type">dxl</param>
+                <param name="ID">10</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl11">
+                <param name="type">dxl</param>
+                <param name="ID">11</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl12">
+                <param name="type">dxl</param>
+                <param name="ID">12</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl13">
+                <param name="type">dxl</param>
+                <param name="ID">13</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl14">
+                <param name="type">dxl</param>
+                <param name="ID">14</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl15">
+                <param name="type">dxl</param>
+                <param name="ID">15</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl16">
+                <param name="type">dxl</param>
+                <param name="ID">16</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+            <gpio name="dxl17">
+                <param name="type">dxl</param>
+                <param name="ID">17</param>
+                <param name="Operating Mode">3</param>
+                <param name="Return Delay Time">10</param>
+                <param name="Profile Velocity">100</param>
+                <param name="Profile Acceleration">50</param>
+                <param name="Torque Enable">1</param>
+                <command_interface name="Goal Position"/>
+                <state_interface name="Present Position"/>
+            </gpio>
+        </ros2_control>
+    </xacro:macro>
+</robot>
+                

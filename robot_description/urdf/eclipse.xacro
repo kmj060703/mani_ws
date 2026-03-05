@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot name="eclipse"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:arg name="prefix" default=""/>
+    <xacro:arg name="use_sim" default="false"/>
+    <xacro:arg name="use_mock_hardware" default="false"/>
+    <xacro:arg name="mock_sensor_commands" default="false"/>
+    <xacro:arg name="can_port_name" default="can0"/>
+    <xacro:arg name="u2d2_port_name" default="/dev/ttyUSB0"/>
+
+    <xacro:include filename="$(find robot_description)/urdf/eclipse_base.xacro"/>
+    <xacro:include filename="$(find robot_description)/urdf/eclipse_arm.xacro"/>
+    <xacro:include filename="$(find robot_description)/urdf/eclipse_gripper.xacro"/>
+    <xacro:include filename="$(find robot_description)/ros2_control/eclipse_ros2_control.xacro"/>
+
+    <joint name="$(arg prefix)base_to_arm" type="fixed">
+        <origin xyz="0.024 0.024 0.006" rpy="0 0 0"/>
+        <parent link="$(arg prefix)base2main_link_1"/>
+        <child link="$(arg prefix)mani_base_link"/>
+    </joint>
+
+    <joint name="$(arg prefix)arm_joint6" type="revolute">
+        <origin xyz="0.0515 0.027 0" rpy="0 0 0"/>
+        <parent link="$(arg prefix)link5_1"/>
+        <child link="$(arg prefix)gripper_base_link"/>
+        <axis xyz="1 0 0"/>
+        <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <xacro:eclipse_base prefix="$(arg prefix)"/>
+    <xacro:eclipse_arm prefix="$(arg prefix)"/>
+    <xacro:eclipse_gripper prefix="$(arg prefix)"/>
+    <xacro:eclipse_ros2_control prefix="$(arg prefix)" use_sim="$(arg use_sim)" use_mock_hardware="$(arg use_mock_hardware)" mock_sensor_commands="$(arg mock_sensor_commands)" can_port_name="$(arg can_port_name)" u2d2_port_name="$(arg u2d2_port_name)"/>
+</robot>
+    

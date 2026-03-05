@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="eclipse_arm" params="prefix">
+    <xacro:property name="meshes_path" value="package://robot_description/meshes/eclipse_arm"/>
+
+    <!-- joint1 -->
+    <link name="${prefix}mani_base_link">
+      <inertial>
+        <origin xyz="4.1218556887289874e-07 7.067628412789034e-06 0.07667542797449876" rpy="0 0 0"/>
+        <mass value="1.1862415046241324"/>
+        <inertia ixx="0.002538" iyy="0.002537" izz="0.000822" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/mani_base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/mani_base_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.0 0.0 0.07" rpy="0.0 0.0 0.0"/>
+        <geometry>
+          <cylinder radius="0.07" length="0.14"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}arm_joint1" type="revolute">
+      <origin xyz="0.0 0.0 0.138" rpy="0 0 0"/>
+      <parent link="${prefix}mani_base_link"/>
+      <child link="${prefix}link1_1"/>
+      <axis xyz="0.0 0.0 1.0"/>
+      <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- joint2 -->
+    <link name="${prefix}link1_1">
+      <inertial>
+        <origin xyz="6.45978317664672e-07 -0.0001609789621932034 0.029682954180736465" rpy="0 0 0"/>
+        <mass value="1.0875137678049913"/>
+        <inertia ixx="0.001819" iyy="0.000579" izz="0.001773" ixy="0.0" iyz="-1e-06" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="-0.0 0.0 -0.138" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="-0.0 0.0 -0.138" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link1_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.0 0.0 0.02" rpy="1.5708 0.0 0.0"/>
+        <geometry>
+          <cylinder radius="0.05" length="0.14"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}arm_joint2" type="revolute">
+      <origin xyz="-0.0 0.068 0.033" rpy="0 1.570796 0"/>
+      <parent link="${prefix}link1_1"/>
+      <child link="${prefix}link2_1"/>
+      <axis xyz="0.0 1.0 -0.0"/>
+      <limit upper="1.658063" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- joint3 -->
+    <link name="${prefix}link2_1">
+      <inertial>
+        <origin xyz="-0.3593097621686804 -0.06810779615005684 0.016735508519571035" rpy="0 0 0"/>
+        <mass value="1.527495790136376"/>
+        <inertia ixx="0.003876" iyy="0.025758" izz="0.028443" ixy="-8e-06" iyz="-3e-06" ixz="0.001945"/>
+      </inertial>
+      <visual>
+        <origin xyz="0.0 -0.068 -0.171" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link2_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.0 -0.068 -0.171" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link2_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="-0.218 -0.02 -0.003" rpy="0.0 1.5708 0.0"/>
+        <geometry>
+          <cylinder radius="0.035" length="0.436"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="-0.218 -0.07 -0.003" rpy="0.0 1.5708 0.0"/>
+        <geometry>
+          <cylinder radius="0.035" length="0.436"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="-0.218 -0.12 -0.003" rpy="0.0 1.5708 0.0"/>
+        <geometry>
+          <cylinder radius="0.035" length="0.436"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}arm_joint3" type="revolute">
+      <origin xyz="-0.436012 -3e-06 0.026857" rpy="0 3.141593 0"/>
+      <parent link="${prefix}link2_1"/>
+      <child link="${prefix}link3_1"/>
+      <axis xyz="0.0 1.0 0.0"/>
+      <limit upper="3.141593" lower="0.0" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- joint4 -->
+    <link name="${prefix}link3_1">
+      <inertial>
+        <origin xyz="0.18345019759983328 -0.06799908234450751 0.0261367861497811" rpy="0 0 0"/>
+        <mass value="0.9709547878732533"/>
+        <inertia ixx="0.001321" iyy="0.011522" izz="0.012245" ixy="-0.0" iyz="-0.0" ixz="-0.000184"/>
+      </inertial>
+      <visual>
+        <origin xyz="0.436012 -0.067997 -0.197857" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link3_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.436012 -0.067997 -0.197857" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link3_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.17 -0.067 0.03" rpy="0.0 1.5708 0.0"/>
+        <geometry>
+          <cylinder radius="0.04" length="0.30"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}arm_joint4" type="revolute">
+      <origin xyz="0.320528 -0.067998 0.027171" rpy="0 0 0"/>
+      <parent link="${prefix}link3_1"/>
+      <child link="${prefix}link4_1"/>
+      <axis xyz="1.0 0.0 0.0"/>
+      <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- joint5 -->
+    <link name="${prefix}link4_1">
+      <inertial>
+        <origin xyz="0.033856700662450015 -0.035466580214723924 2.1929405756571096e-06" rpy="0 0 0"/>
+        <mass value="0.39765226777430873"/>
+        <inertia ixx="0.000529" iyy="0.000264" izz="0.000688" ixy="5.7e-05" iyz="0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0.115484 1e-06 -0.225028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link4_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.115484 1e-06 -0.225028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link4_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.03 -0.02 0.004" rpy="1.5708 0.0 0.0"/>
+        <geometry>
+          <cylinder radius="0.04" length="0.12"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}arm_joint5" type="revolute">
+      <origin xyz="0.0602 -0.027 0.0" rpy="0 0 0"/>
+      <parent link="${prefix}link4_1"/>
+      <child link="${prefix}link5_1"/>
+      <axis xyz="0.0 1.0 0.0"/>
+      <limit upper="1.570796" lower="-1.570796" effort="100" velocity="100"/>
+    </joint>
+
+    <!-- before joint6 -->
+    <link name="${prefix}link5_1">
+      <inertial>
+        <origin xyz="0.012837492850813946 0.027000310454766936 -1.1964334410696775e-05" rpy="0 0 0"/>
+        <mass value="0.3671682127464688"/>
+        <inertia ixx="0.00013" iyy="0.000195" izz="0.000218" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0.055284 0.027001 -0.225028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link5_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="silver">
+          <color rgba="0.700 0.700 0.700 1.000"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.055284 0.027001 -0.225028" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="${meshes_path}/link5_1.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.025 0.03 0.0" rpy="0.0 1.5708 0.0"/>
+        <geometry>
+          <cylinder radius="0.035" length="0.04"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+</robot>
